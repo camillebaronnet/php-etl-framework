@@ -1,6 +1,6 @@
 <?php
 
-namespace Camillebaronnet\ETL\Extractors;
+namespace Camillebaronnet\ETL\Extractor;
 
 interface ExtractInterface
 {

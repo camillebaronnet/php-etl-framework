@@ -1,6 +1,6 @@
 <?php
 
-namespace Camillebaronnet\ETL\Exceptions;
+namespace Camillebaronnet\ETL\Exception;
 
 use Exception;
 

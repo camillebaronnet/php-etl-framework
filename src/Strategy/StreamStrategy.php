@@ -3,10 +3,10 @@
 namespace Camillebaronnet\ETL\Strategy;
 
 use Camillebaronnet\ETL\ETLInterface;
-use Camillebaronnet\ETL\Exceptions\BadInterface;
-use Camillebaronnet\ETL\Extractors\ExtractInterface;
+use Camillebaronnet\ETL\Exception\BadInterface;
+use Camillebaronnet\ETL\Extractor\ExtractInterface;
 use Camillebaronnet\ETL\Loader\StreamLoaderInterface;
-use Camillebaronnet\ETL\Transformers\TransformInterface;
+use Camillebaronnet\ETL\Transformer\TransformInterface;
 use Generator;
 
 class StreamStrategy extends AbstractStrategy

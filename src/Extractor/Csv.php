@@ -1,8 +1,8 @@
 <?php
 
-namespace Camillebaronnet\ETL\Extractors;
+namespace Camillebaronnet\ETL\Extractor;
 
-use Camillebaronnet\ETL\Exceptions\MissingParameter;
+use Camillebaronnet\ETL\Exception\MissingParameter;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 
 class Csv extends AbstractExtractor

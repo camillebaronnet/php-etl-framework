@@ -1,6 +1,6 @@
 <?php
 
-namespace Camillebaronnet\ETL\Transformers;
+namespace Camillebaronnet\ETL\Transformer;
 
 interface TransformInterface
 {

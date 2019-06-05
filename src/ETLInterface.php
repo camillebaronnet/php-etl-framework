@@ -2,7 +2,7 @@
 
 namespace Camillebaronnet\ETL;
 
-use Camillebaronnet\ETL\Exceptions\BadInterface;
+use Camillebaronnet\ETL\Exception\BadInterface;
 
 /**
  * Class ETL

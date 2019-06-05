@@ -3,7 +3,7 @@
 namespace Camillebaronnet\ETL\Strategy;
 
 use Camillebaronnet\ETL\ETLInterface;
-use Camillebaronnet\ETL\Exceptions\BadInterface;
+use Camillebaronnet\ETL\Exception\BadInterface;
 use Camillebaronnet\ETL\Loader\LoaderInterface;
 
 class LayerStrategy extends AbstractStrategy

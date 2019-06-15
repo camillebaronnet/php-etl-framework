@@ -29,8 +29,12 @@ use Camillebaronnet\ETL\Loader\Json;
 //...
 
 $etl = (new LayerStrategy)
-    ->extract(Csv::class, ['filename' => 'dump.php'])
-    ->transform(Trim::class)
+    ->extract(Http::class, [
+        'url' => 'https://api.github.com/users/camillebaronnet/repos'
+    ])
+    ->transform(Flatten::class, [
+        'glue' => '_'
+    ])
     ->transform(DateTime::class, ['format' => 'd/m/Y', 'fields' => ['createAt']])
 ;
 

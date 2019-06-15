@@ -7,7 +7,6 @@ use Camillebaronnet\ETL\Exception\BadInterface;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyExtractor;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyStreamLoader;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyTransformer;
-use Generator;
 
 final class StreamStrategyTest extends AbstractStrategyTest
 {

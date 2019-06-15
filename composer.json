@@ -1,5 +1,6 @@
 {
     "name": "camillebaronnet/php-etl",
+    "license": "MIT",
     "authors": [
         {
             "name": "Camille Baronnet",

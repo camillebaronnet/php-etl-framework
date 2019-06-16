@@ -2,6 +2,11 @@
 
 Create simple imports with the [Extract, Transform, Load](https://en.wikipedia.org/wiki/Extract,_transform,_load) pattern.
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/camillebaronnet/php-etl.svg?style=flat-square)](https://packagist.org/packages/camillebaronnet/php-etl)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.1-8892BF.svg?style=flat-square)](https://php.net/)
+[![GitHub issues](https://img.shields.io/github/issues/camillebaronnet/php-etl-framework.svg?style=flat-square)](https://github.com/camillebaronnet/php-etl-framework/issues)
+[![GitHub license](https://img.shields.io/github/license/camillebaronnet/php-etl-framework.svg?style=flat-square)](https://github.com/camillebaronnet/php-etl-framework/blob/master/LICENSE)
+
 ## Installation
 
 ```sh

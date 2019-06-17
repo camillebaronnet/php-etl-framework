@@ -1,6 +1,9 @@
 {
     "name": "camillebaronnet/php-etl",
     "license": "MIT",
+    "config": {
+        "bin-dir" : "./bin"
+    },
     "authors": [
         {
             "name": "Camille Baronnet",

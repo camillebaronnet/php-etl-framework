@@ -11,13 +11,12 @@ abstract class AbstractExtractor implements ExtractInterface
 
     /**
      * @param array $requiredFields
-     * @param array $params
      * @throws MissingParameter
      */
-    protected function requiredParameters(array $requiredFields, array $params)
+    protected function requiredParameters(array $requiredFields): void
     {
         foreach ($requiredFields as $field) {
-            if (!isset($params[$field])) {
+            if (null === $this->$field) {
                 throw new MissingParameter('Parameter "'.$field.'" is missing.');
             }
         }

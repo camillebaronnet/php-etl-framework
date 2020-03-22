@@ -14,38 +14,32 @@ class LayerStrategy extends AbstractStrategy
     private $data;
 
     /**
-     * @param string $extractorClass
-     * @param array $context
      * @return LayerStrategy
      * @throws BadInterface
      */
     public function extract(string $extractorClass, array $context = []): ETLInterface
     {
-        $this->data = $this->instanceOfExtractor($extractorClass)($context);
+        $this->data = $this->instanceOfExtractor($extractorClass, $context)();
 
         return $this;
     }
 
     /**
-     * @param string $transformClass
-     * @param array $context
      * @return ETLInterface
      * @throws BadInterface
      */
     public function transform(string $transformClass, array $context = []): ETLInterface
     {
-        $transform = $this->instanceOfTransform($transformClass);
+        $transform = $this->instanceOfTransform($transformClass, $context);
 
         foreach($this->data as &$line){
-            $line = $transform($line, $context);
+            $line = $transform($line);
         }
 
         return $this;
     }
 
     /**
-     * @param string $loadClass
-     * @param array $context
      * @return mixed
      * @throws BadInterface
      */
@@ -57,6 +51,7 @@ class LayerStrategy extends AbstractStrategy
             throw new BadInterface(sprintf('Bad interface. %s must be an instance of LoaderInterface.', $loadClass));
         }
 
-        return $load($this->data, $context);
+        $this->fillInstanceParameters($load, $context);
+        return $load($this->data);
     }
 }

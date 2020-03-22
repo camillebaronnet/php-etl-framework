@@ -12,6 +12,10 @@ use Symfony\Component\Serializer\Encoder\YamlEncoder;
 
 trait SupportDecoders
 {
+    public $decoder;
+
+    public $contextDecoder = [];
+
     /**
      * Content-Type decoders matches.
      */
@@ -91,14 +95,13 @@ trait SupportDecoders
     /**
      * @param $body
      * @param $typeMime
-     * @param array $context
      * @return mixed
      * @throws BadInterface
      * @throws DecoderNotFound
      */
-    protected function decode($body, $typeMime, $context = [])
+    protected function decode($body, $typeMime)
     {
-        $contextDecoder = $context['decoder'] ?? [];
+        $contextDecoder = $this->decoder ?? [];
         $decoderClass = $contextDecoder['class'] ?? $this->findDecoder($typeMime);
 
         if (null === $decoderClass) {
@@ -114,6 +117,6 @@ trait SupportDecoders
 
         $format = defined($decoderClass.'::FORMAT') ? $decoderClass::FORMAT : null;
 
-        return $decoder->decode($body, $format, $context);
+        return $decoder->decode($body, $format, $this->contextDecoder);
     }
 }

@@ -6,24 +6,14 @@ use Generator;
 
 class Display implements LoaderInterface, StreamLoaderInterface
 {
-    /**
-     * @param array $data
-     * @param array $params
-     * @return array
-     */
-    public function __invoke(array $data, array $params = [])
+    public function __invoke(array $data): void
     {
-        return print_r($data);
+        print_r($data);
     }
 
-    /**
-     * @param Generator $collection
-     * @param array $params
-     * @return void
-     */
-    public function stream(Generator $collection, array $params = [])
+    public function stream(Generator $collection): void
     {
-        foreach($collection as $row){
+        foreach ($collection as $row) {
             print_r($row);
         }
     }

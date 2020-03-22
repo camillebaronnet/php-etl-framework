@@ -6,11 +6,13 @@ use Camillebaronnet\ETL\Extractor\ExtractInterface;
 
 class DummyExtractor implements ExtractInterface
 {
+    public $data = [];
+
     /**
      * {@inheritdoc}
      */
-    public function __invoke(array $params = []): iterable
+    public function __invoke(): iterable
     {
-        return $params['data'] ?? [];
+        return $this->data;
     }
 }

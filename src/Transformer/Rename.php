@@ -4,10 +4,12 @@ namespace Camillebaronnet\ETL\Transformer;
 
 class Rename implements TransformInterface
 {
-    public function __invoke(array $data, array $params = []): array
+    public $fields = [];
+
+    public function __invoke(array $data): array
     {
-        return array_map(static function($item) use ($params){
-            foreach($params as $oldName => $newName){
+        return array_map(function ($item) {
+            foreach ($this->fields as $oldName => $newName) {
                 $item[$newName] = $item[$oldName];
                 unset($item[$oldName]);
             }

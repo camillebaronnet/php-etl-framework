@@ -22,46 +22,31 @@ class StreamStrategy extends AbstractStrategy
     private $transformers = [];
 
     /**
-     * @var array
-     */
-    private $extractorContext = [];
-
-    /**
-     * @param string $extractorClass
-     * @param array $context
      * @return StreamStrategy
      * @throws BadInterface
      */
     public function extract(string $extractorClass, array $context = []): ETLInterface
     {
-        $this->extractor = $this->instanceOfExtractor($extractorClass);
-        $this->extractorContext = $context;
+        $this->extractor = $this->instanceOfExtractor($extractorClass, $context);
 
         return $this;
     }
 
     /**
-     * @param string $transformClass
-     * @param array $context
      * @return StreamStrategy
      * @throws BadInterface
      */
     public function transform(string $transformClass, array $context = []): ETLInterface
     {
-        $this->transformers[] = [
-            'instance' => $this->instanceOfTransform($transformClass),
-            'context' => $context
-        ];
+        $this->transformers[] = $this->instanceOfTransform($transformClass, $context);
 
         return $this;
     }
 
     /**
-     * @param string $loadClass
-     * @param array|null $context
      * @throws BadInterface
      */
-    public function load(string $loadClass, array $context = [])
+    public function load(string $loadClass, ?array $context = [])
     {
         $load = new $loadClass;
 
@@ -69,7 +54,8 @@ class StreamStrategy extends AbstractStrategy
             throw new BadInterface(sprintf('Bad interface. %s must be an instance of StreamLoaderInterface.', $loadClass));
         }
 
-        $load->stream($this->stream(), $context);
+        $this->fillInstanceParameters($load, $context);
+        $load->stream($this->stream());
     }
 
     /**
@@ -79,9 +65,9 @@ class StreamStrategy extends AbstractStrategy
     {
         $extractor = $this->extractor;
 
-        foreach($extractor($this->extractorContext) as &$row) {
+        foreach($extractor() as &$row) {
             foreach ($this->transformers as $transformer) {
-                $row = $transformer['instance']($row, $transformer['context']);
+                $row = $transformer($row);
             }
             yield $row;
         }

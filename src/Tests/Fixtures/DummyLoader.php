@@ -9,7 +9,7 @@ class DummyLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function __invoke(array $collection, array $context = [])
+    public function __invoke(array $collection)
     {
         return $collection;
     }

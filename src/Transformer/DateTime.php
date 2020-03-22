@@ -4,13 +4,14 @@ namespace Camillebaronnet\ETL\Transformer;
 
 class DateTime implements TransformInterface
 {
-    const DEFAULT_FORMAT = 'Y-m-d H:i:s';
+    public $fields = [];
+    public $format = 'Y-m-d H:i:s';
 
-    public function __invoke(array $data, array $params = []): array
+    public function __invoke(array $data): array
     {
-        foreach($params['fields'] as $fieldName){
+        foreach($this->fields as $fieldName){
             $data[$fieldName] = \DateTime::createFromFormat(
-                $params['format'] ?? static::DEFAULT_FORMAT,
+                $this->format,
                 $data[$fieldName]
             );
         }

@@ -56,9 +56,8 @@ final class FlattenTest extends TestCase
 
     public function testCanFlattenOnlySomeSegments()
     {
-        $result = $this->flatten->__invoke($this->complexObject, [
-            'only' => ['address', 'sub-tree'],
-        ]);
+        $this->flatten->only = ['address', 'sub-tree'];
+        $result = $this->flatten->__invoke($this->complexObject);
 
         $this->assertEquals($result, [
             'name' => 'Bar',
@@ -76,9 +75,8 @@ final class FlattenTest extends TestCase
 
     public function testCanFlattenAllSegmentsExceptOne()
     {
-        $result = $this->flatten->__invoke($this->complexObject, [
-            'ignore' => ['address'],
-        ]);
+        $this->flatten->ignore = ['address'];
+        $result = $this->flatten->__invoke($this->complexObject);
 
         $this->assertEquals($result, [
             'name' => 'Bar',
@@ -96,9 +94,8 @@ final class FlattenTest extends TestCase
 
     public function testCanSpecifyACustomRootKey()
     {
-        $result = $this->flatten->__invoke($this->complexObject, [
-            'rootKey' => '__',
-        ]);
+        $this->flatten->rootKey = '__';
+        $result = $this->flatten->__invoke($this->complexObject);
 
         $this->assertEquals($result, [
             '__name' => 'Bar',
@@ -114,9 +111,8 @@ final class FlattenTest extends TestCase
 
     public function testCanSpecifyACustomGlue()
     {
-        $result = $this->flatten->__invoke($this->complexObject, [
-            'glue' => '_',
-        ]);
+        $this->flatten->glue = '_';
+        $result = $this->flatten->__invoke($this->complexObject);
 
         $this->assertEquals($result, [
             'name' => 'Bar',

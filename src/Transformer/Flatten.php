@@ -4,41 +4,29 @@ namespace Camillebaronnet\ETL\Transformer;
 
 class Flatten implements TransformInterface
 {
-    /**
-     * Default context.
-     */
-    public const DEFAULT_CONTEXT = [
-        'rootKey' => '',
-        'glue' => '.',
-        'ignore' => null,
-        'only' => null,
-    ];
+    public $rootKey = '';
 
-    /**
-     * The saved context, hydrated by the __invoke.
-     *
-     * @var array
-     */
-    protected $context = [];
+    public $glue = '.';
+
+    public $ignore;
+
+    public $only;
 
     /**
      * The class entry point.
      *
      * @param array $data
-     * @param array $context
      * @return array
      */
-    public function __invoke(array $data, array $context = []): array
+    public function __invoke(array $data): array
     {
-
-        $context = $this->context = array_merge(static::DEFAULT_CONTEXT, $context);
 
         $flattened = [];
         $this->flatten(
             $data,
             $flattened,
-            $context['glue'],
-            $context['rootKey']
+            $this->glue,
+            $this->rootKey
         );
 
         return $flattened;
@@ -51,17 +39,16 @@ class Flatten implements TransformInterface
      * @param array $result
      * @param string $glue
      * @param string $parentKey
-     * @param bool $escapeFormulas
      */
-    private function flatten(array $input, array &$result, string $glue, string $parentKey = '')
+    private function flatten(array $input, array &$result, string $glue, string $parentKey = ''): void
     {
 
         foreach ($input as $key => $value) {
-            $only = $this->context['only']
-                ? $this->stringStartBy($parentKey.$key, $this->context['only'])
+            $only = $this->only
+                ? $this->stringStartBy($parentKey.$key, $this->only)
                 : true;
-            $ignore = $this->context['ignore']
-                ? !$this->stringStartBy($parentKey.$key, $this->context['ignore'])
+            $ignore = $this->ignore
+                ? !$this->stringStartBy($parentKey.$key, $this->ignore)
                 : true;
 
             if (is_array($value) && $only && $ignore) {
@@ -82,7 +69,7 @@ class Flatten implements TransformInterface
     private function stringStartBy($needle, array $haystack): bool
     {
         foreach ($haystack as $input) {
-            if ($input === substr($needle, 0, strlen($input))) {
+            if (strpos($needle, $input) === 0) {
                 return true;
             }
         }

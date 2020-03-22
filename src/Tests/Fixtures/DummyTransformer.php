@@ -9,7 +9,7 @@ class DummyTransformer implements TransformInterface
     /**
      * {@inheritdoc}
      */
-    public function __invoke(array $data, array $params = []): array
+    public function __invoke(array $data): array
     {
         return $data;
     }

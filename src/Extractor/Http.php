@@ -3,64 +3,57 @@
 namespace Camillebaronnet\ETL\Extractor;
 
 use Camillebaronnet\ETL\Exception\BadInterface;
+use Camillebaronnet\ETL\Exception\DecoderNotFound;
 use Camillebaronnet\ETL\Exception\MissingParameter;
 
 class Http extends AbstractExtractor
 {
-    /**
-     * Default context.
-     */
-    public const DEFAULT_CONTEXT = [
-        'method' => 'GET',
-        'data' => null,
-        'headers' => [],
-        'curl_opts' => [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT => '-',
-            CURLOPT_AUTOREFERER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSL_VERIFYPEER => true,
-        ],
+    public $method = 'GET';
+    public $url;
+    public $data;
+    public $curlOpts = [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_USERAGENT => '-',
+        CURLOPT_AUTOREFERER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_SSL_VERIFYPEER => true,
     ];
 
     /**
-     * @param array $context
-     * @return iterable
-     * @throws MissingParameter
      * @throws BadInterface
+     * @throws MissingParameter
+     * @throws DecoderNotFound
      */
-    public function __invoke(array $context = []): iterable
+    public function __invoke(): iterable
     {
-        $this->requiredParameters(['url'], $context);
+        $this->requiredParameters(['url']);
 
-        $context = array_merge(static::DEFAULT_CONTEXT, $context);
         $curl_opts = [
-            CURLOPT_URL => $context['url'],
-            CURLOPT_CUSTOMREQUEST => strtoupper($context['method']),
+            CURLOPT_URL => $this->url,
+            CURLOPT_CUSTOMREQUEST => strtoupper($this->method),
         ];
 
-        if (null !== $context['data']) {
+        if (null !== $this->data) {
             $curl_opts += [
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => $context['data'],
+                CURLOPT_POSTFIELDS => $this->data,
             ];
         }
 
-        if ('HEAD' === strtoupper($context['method'])) {
+        if ('HEAD' === strtoupper($this->method)) {
             $curl_opts += [CURLOPT_NOBODY => 1];
         }
 
         $ch = curl_init();
-        curl_setopt_array($ch, $curl_opts + $context['curl_opts']);
+        curl_setopt_array($ch, $curl_opts + $this->curlOpts);
         $content = curl_exec($ch);
         $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         curl_close($ch);
 
         return $this->decode(
             $content,
-            $contentType,
-            $context
+            $contentType
         );
     }
 }

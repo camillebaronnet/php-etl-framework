@@ -20,11 +20,11 @@ composer require camillebaronnet/php-etl
 
 namespace App;
 
-use Camillebaronnet\ETL\Extractor\Csv;
+use Camillebaronnet\ETL\Extractor\Http;
 use Camillebaronnet\ETL\Strategy\LayerStrategy;
 use Camillebaronnet\ETL\Transformer\DateTime;
-use Camillebaronnet\ETL\Transformer\Trim;
 use Camillebaronnet\ETL\Loader\Json;
+use Camillebaronnet\ETL\Transformer\Flatten;
 
 //...
 

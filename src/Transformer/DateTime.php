@@ -2,13 +2,15 @@
 
 namespace Camillebaronnet\ETL\Transformer;
 
+use Camillebaronnet\ETL\TransformInterface;
+
 class DateTime implements TransformInterface
 {
     public $fields = [];
     public $from = 'Y-m-d H:i:s';
     public $to;
 
-    public function __invoke(array $data): array
+    public function __invoke(iterable $data): iterable
     {
         foreach($this->fields as $fieldName){
             $data[$fieldName] = \DateTime::createFromFormat(

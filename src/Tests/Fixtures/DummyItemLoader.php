@@ -2,9 +2,9 @@
 
 namespace Camillebaronnet\ETL\Tests\Fixtures;
 
-use Camillebaronnet\ETL\Loader\LoaderInterface;
+use Camillebaronnet\ETL\Loader\ItemLoaderInterface;
 
-class DummyLoader implements LoaderInterface
+class DummyItemLoader implements ItemLoaderInterface
 {
     /**
      * {@inheritdoc}

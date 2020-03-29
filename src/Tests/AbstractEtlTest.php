@@ -1,6 +1,6 @@
 <?php
 
-namespace Camillebaronnet\ETL\Tests\Strategy;
+namespace Camillebaronnet\ETL\Tests;
 
 use Camillebaronnet\ETL\ETLInterface;
 use Camillebaronnet\ETL\Exception\BadInterface;
@@ -9,7 +9,7 @@ use Camillebaronnet\ETL\Tests\Fixtures\DummyTransformer;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-abstract class AbstractStrategyTest extends TestCase
+abstract class AbstractEtlTest extends TestCase
 {
     /**
      * @var ETLInterface
@@ -31,7 +31,7 @@ abstract class AbstractStrategyTest extends TestCase
     public function testCannotPassAnObjectThatDoesNotImplementLoaderInterface()
     {
         $this->expectException(BadInterface::class);
-        $this->etl->load(stdClass::class);
+        $this->etl->process(stdClass::class);
     }
 
     /**
@@ -40,7 +40,7 @@ abstract class AbstractStrategyTest extends TestCase
     public function testCannotPassAnObjectThatDoesNotImplementTransformInterface()
     {
         $this->expectException(BadInterface::class);
-        $this->etl->transform(stdClass::class);
+        $this->etl->add(stdClass::class);
     }
 
     /**
@@ -58,7 +58,7 @@ abstract class AbstractStrategyTest extends TestCase
     public function testCanPassAnObjectThatImplementTransformerInterface()
     {
         $this->etl->extract(DummyExtractor::class);
-        $etl = $this->etl->transform(DummyTransformer::class);
+        $etl = $this->etl->add(DummyTransformer::class);
         $this->assertInstanceOf(ETLInterface::class, $etl);
     }
 }

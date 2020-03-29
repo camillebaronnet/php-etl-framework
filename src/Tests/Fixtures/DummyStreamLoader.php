@@ -2,19 +2,31 @@
 
 namespace Camillebaronnet\ETL\Tests\Fixtures;
 
-use Camillebaronnet\ETL\Loader\StreamLoaderInterface;
-use Generator;
+use Camillebaronnet\ETL\LoaderInterface;
 
-class DummyStreamLoader implements StreamLoaderInterface
+class DummyStreamLoader implements LoaderInterface
 {
     public $filename;
 
-    public function stream(Generator $collection): void
+    public $lines = [];
+
+    /**
+     * Collect data during iterations.
+     */
+    public function __invoke(iterable $line)
+    {
+        $this->lines[] = $line;
+    }
+
+    /**
+     * When the ETL process down, instance is instantly destruct.
+     */
+    public function __destruct()
     {
         if (null === $this->filename) {
             return;
         }
 
-        file_put_contents($this->filename, serialize(iterator_to_array($collection)));
+        file_put_contents($this->filename, serialize($this->lines));
     }
 }

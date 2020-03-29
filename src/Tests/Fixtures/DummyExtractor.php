@@ -2,7 +2,7 @@
 
 namespace Camillebaronnet\ETL\Tests\Fixtures;
 
-use Camillebaronnet\ETL\Extractor\ExtractInterface;
+use Camillebaronnet\ETL\ExtractInterface;
 
 class DummyExtractor implements ExtractInterface
 {

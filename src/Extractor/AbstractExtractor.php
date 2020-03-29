@@ -3,12 +3,10 @@
 namespace Camillebaronnet\ETL\Extractor;
 
 use Camillebaronnet\ETL\Exception\MissingParameter;
-use Camillebaronnet\ETL\Extractor\Extension\SupportDecoders;
+use Camillebaronnet\ETL\ExtractInterface;
 
 abstract class AbstractExtractor implements ExtractInterface
 {
-    use SupportDecoders;
-
     /**
      * @param array $requiredFields
      * @throws MissingParameter

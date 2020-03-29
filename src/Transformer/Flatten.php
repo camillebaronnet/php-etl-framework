@@ -2,6 +2,8 @@
 
 namespace Camillebaronnet\ETL\Transformer;
 
+use Camillebaronnet\ETL\TransformInterface;
+
 class Flatten implements TransformInterface
 {
     public $rootKey = '';
@@ -18,9 +20,8 @@ class Flatten implements TransformInterface
      * @param array $data
      * @return array
      */
-    public function __invoke(array $data): array
+    public function __invoke(iterable $data): array
     {
-
         $flattened = [];
         $this->flatten(
             $data,

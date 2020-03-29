@@ -2,8 +2,6 @@
 
 namespace Camillebaronnet\ETL\Extractor;
 
-use Camillebaronnet\ETL\Exception\BadInterface;
-use Camillebaronnet\ETL\Exception\DecoderNotFound;
 use Camillebaronnet\ETL\Exception\MissingParameter;
 
 class Http extends AbstractExtractor
@@ -21,9 +19,7 @@ class Http extends AbstractExtractor
     ];
 
     /**
-     * @throws BadInterface
      * @throws MissingParameter
-     * @throws DecoderNotFound
      */
     public function __invoke(): iterable
     {
@@ -47,13 +43,12 @@ class Http extends AbstractExtractor
 
         $ch = curl_init();
         curl_setopt_array($ch, $curl_opts + $this->curlOpts);
-        $content = curl_exec($ch);
-        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        curl_close($ch);
 
-        return $this->decode(
-            $content,
-            $contentType
-        );
+        yield [
+            'body' => curl_exec($ch),
+            'contentType' => curl_getinfo($ch, CURLINFO_CONTENT_TYPE)
+        ];
+
+        curl_close($ch);
     }
 }

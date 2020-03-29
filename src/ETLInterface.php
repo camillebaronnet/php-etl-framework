@@ -11,26 +11,20 @@ use Camillebaronnet\ETL\Exception\BadInterface;
 interface ETLInterface
 {
     /**
-     * @param string $extractorClass
-     * @param array $context
      * @return ETLInterface
      * @throws BadInterface
      */
     public function extract(string $extractorClass, array $context = []): self;
 
     /**
-     * @param string $transformClass
-     * @param array $context
      * @return ETLInterface
      * @throws BadInterface
      */
-    public function transform(string $transformClass, array $context = []): self;
+    public function add(string $transformerOrLoaderClass, array $arguments = []): self;
 
     /**
-     * @param string $loadClass
-     * @param array|null $context
      * @return mixed
      * @throws BadInterface
      */
-    public function load(string $loadClass, array $context = []);
+    public function process(?string $loadClass = null, ?array $context = []);
 }

@@ -15,46 +15,96 @@ composer require camillebaronnet/php-etl
 
 ## Usage
 
+This example extract some Github's repositories, apply some transformations
+
 ```php
 <?php
 
-namespace App;
-
+use Camillebaronnet\ETL\Etl;
 use Camillebaronnet\ETL\Extractor\Http;
-use Camillebaronnet\ETL\Strategy\LayerStrategy;
+use Camillebaronnet\ETL\Loader\DebugLoader;
 use Camillebaronnet\ETL\Transformer\DateTime;
-use Camillebaronnet\ETL\Loader\Json;
+use Camillebaronnet\ETL\Transformer\Decode;
 use Camillebaronnet\ETL\Transformer\Flatten;
+use Camillebaronnet\ETL\Transformer\Map;
+use Camillebaronnet\ETL\Transformer\Sleep;
 
-//...
-
-$etl = (new LayerStrategy)
-    ->extract(Http::class, [
-        'url' => 'https://api.github.com/users/camillebaronnet/repos'
+$etl = (new Etl)
+    ->extract(Http::class, ['url' => 'https://api.github.com/users/camillebaronnet/repos'])
+    ->add(Decode::class)
+    ->add(Sleep::class, ['seconds' => .2])
+    ->add(Flatten::class, ['glue' => '_'])
+    ->add(Map::class, [
+        'fields' => [
+            'id',
+            'name',
+            'full_name' => 'fullName',
+            'owner_login' => 'ownerLogin',
+            'owner_url' => 'ownerUrl',
+            'url',
+            'ssh_url' => 'sshUrl',
+            'created_at' => 'createdAt'
+        ]
     ])
-    ->transform(Flatten::class, [
-        'glue' => '_'
+    ->add(DateTime::class, [
+        'fields' => ['createdAt'],
+        'from' => 'Y-m-d\TH:i:s\Z',
+        'to' => 'd/m/Y',
     ])
-    ->transform(DateTime::class, ['format' => 'd/m/Y', 'fields' => ['createAt']])
 ;
 
-echo $etl->load(Json::class);
+$etl->process(DebugLoader::class);
 
-//...
 ```
 
-## The different strategies
+## The process explained
 
-<img src="docs/diagram.svg">
+- **EXTRACT :**
+Extract can output one or more items
+
+- **TRANFORM :** 
+A transform step takes the result of the previous 
+step (extractor or transformer) apply an operation and optionally 
+split the input into several subsets of items (example with [Decode](src/Transformer/Decode.php)).
+
+- **LOADER :**
+A loader can by placed at the end of the pipeline or between transformers.
+Several Loader can be setting up.
+
+## Collection
+
+### Extractors
+
+|Name |Description|
+|------|------|
+| [HTTP](src/Extractor/Http.php) | Simple wrapper for the libCurl |
+
+### Transformers
+
+|Name |Description|
+|------|------|
+| [Decode](src/Transformer/Decode.php) | Decode JSON, YAML, XML, CSV and more using Symfony's DecoderInterface |
+| [Map](src/Transformer/Map.php) | Rename, keep and remove some fields |
+| [Flatten](src/Transformer/Flatten.php) | Flattens a multi-dimensional collection into a single dimension |
+| [Trim](src/Transformer/Trim.php) | Strip whitespace from the beginning and end of a string |
+| [Sleep](src/Transformer/Sleep.php) | Delay execution |
+| [DateTime](src/Transformer/DateTime.php) | Parse/Convert dates |
+
+
+### Loaders
+
+|Name |Description|
+|------|------|
+| [Debug](src/Loader/DebugLoader.php) | Display items in output |
+
 
 ## Extendable
 
 You can easily create your own custom Extractors,
 Transformers, Loader or Strategy by implementing the corresponding interface.
 
-- [ExtractInterface](src/Extractor/ExtractInterface.php)
-- [TransformInterface](src/Transformer/TransformInterface.php)
-- [LoaderInterface](src/Loader/LoaderInterface.php), if you're using the LayerStrategy.
-- [StreamLoaderInterface](src/Loader/StreamLoaderInterface.php), if you're using the StreamStrategy.
+- [ExtractInterface](src/ExtractInterface.php)
+- [TransformInterface](src/TransformInterface.php)
+- [LoaderInterface](src/LoaderInterface.php)
 
-You also can create a custom Strategy by implementing the [ETLInterface](src/ETLInterface.php).
+Submit yours. Send a [pull-request](https://github.com/camillebaronnet/php-etl-framework/compare)

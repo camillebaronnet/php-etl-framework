@@ -1,20 +1,20 @@
 <?php
 
-namespace Camillebaronnet\ETL\Tests\Strategy;
+namespace Camillebaronnet\ETL\Tests;
 
-use Camillebaronnet\ETL\Strategy\StreamStrategy;
+use Camillebaronnet\ETL\Etl;
 use Camillebaronnet\ETL\Exception\BadInterface;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyExtractor;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyStreamLoader;
 use Camillebaronnet\ETL\Tests\Fixtures\DummyTransformer;
 
-final class StreamStrategyTest extends AbstractStrategyTest
+final class ETLTest extends AbstractEtlTest
 {
     private $tmpFile;
 
     protected function setUp()
     {
-        $this->etl = new StreamStrategy();
+        $this->etl = new Etl();
         $this->tmpFile = tempnam(sys_get_temp_dir(), 'ETL');
     }
 
@@ -24,8 +24,8 @@ final class StreamStrategyTest extends AbstractStrategyTest
     public function testCanPassAnObjectThatImplementStreamLoaderInterface()
     {
         $this->etl->extract(DummyExtractor::class);
-        $this->etl->transform(DummyTransformer::class);
-        $this->etl->load(DummyStreamLoader::class);
+        $this->etl->add(DummyTransformer::class);
+        $this->etl->process(DummyStreamLoader::class);
         $this->assertTrue(true);
     }
 
@@ -40,8 +40,8 @@ final class StreamStrategyTest extends AbstractStrategyTest
         ];
 
         $this->etl->extract(DummyExtractor::class, ['data' => $sample]);
-        $this->etl->transform(DummyTransformer::class);
-        $this->etl->load(DummyStreamLoader::class, ['filename' => $this->tmpFile]);
+        $this->etl->add(DummyTransformer::class);
+        $this->etl->process(DummyStreamLoader::class, ['filename' => $this->tmpFile]);
 
         $this->assertEqualsCanonicalizing(
             serialize($sample),

@@ -30,28 +30,28 @@ final class MapTest extends TestCase
     public function testCanRenameSomeKeysAndRemoveUnrenamed()
     {
         $this->map->fields = [
-            'name' => 'TheName'
+            'TheName' => 'name',
         ];
         $result = $this->map->__invoke($this->data);
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'TheName' => 'Bar'
-        ]);
+        ], $result);
     }
 
     public function testCanRenameSomeKeysAndKeepUnrenamed()
     {
         $this->map->fields = [
-            'name' => 'TheName'
+            'TheName' => 'name',
         ];
         $this->map->keepUnmapped = true;
         $result = $this->map->__invoke($this->data);
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'TheName' => 'Bar',
             'address_street' => '1 road',
             'address_zip' => 'xxx',
-        ]);
+        ], $result);
     }
 
     public function testCanMapSomeKeysWithoutRenamesItAndRemoveOther()
@@ -59,9 +59,9 @@ final class MapTest extends TestCase
         $this->map->fields = ['name', 'address_street'];
         $result = $this->map->__invoke($this->data);
 
-        $this->assertEquals($result, [
+        $this->assertEquals([
             'name' => 'Bar',
             'address_street' => '1 road',
-        ]);
+        ], $result);
     }
 }

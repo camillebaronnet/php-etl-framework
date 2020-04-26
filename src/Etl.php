@@ -3,6 +3,7 @@
 namespace Camillebaronnet\ETL;
 
 use Camillebaronnet\ETL\Exception\BadInterface;
+use Generator;
 
 class Etl implements ETLInterface
 {
@@ -61,27 +62,39 @@ class Etl implements ETLInterface
      */
     public function process(?string $loadClass = null, ?array $context = [])
     {
-        if(null !== $loadClass){
+        if (null !== $loadClass) {
             $this->add($loadClass, $context);
         }
 
-        $this->run();
+        foreach ($this->run() as $line) {
+            continue;
+        }
+
+        $this->resetInstance();
+    }
+
+    public function getIterator(): Generator
+    {
+        foreach ($this->run() as $line) {
+            yield $line;
+        }
+
         $this->resetInstance();
     }
 
     private function run()
     {
-        $iterate = static function ($data, Step $step){
-            foreach($data as $row){
-                if($step->getInstance() instanceof LoaderInterface){
+        $iterate = static function ($data, Step $step) {
+            foreach ($data as $row) {
+                if ($step->getInstance() instanceof LoaderInterface) {
                     $step->getInstance()($row);
                     yield $row;
                     continue;
                 }
 
                 $output = $step->getInstance()($row);
-                if($output instanceof \Generator){
-                    foreach($output as $line){
+                if ($output instanceof Generator) {
+                    foreach ($output as $line) {
                         yield $line;
                     }
                 } else {
@@ -90,17 +103,15 @@ class Etl implements ETLInterface
             }
         };
 
-        $pipeline = static function($data) {
-            foreach($data as $line){
-                continue;
-            }
+        $pipeline = static function ($data) {
+            return $data;
         };
 
         $reversedSteps = array_reverse($this->steps);
-        foreach($reversedSteps as $step){
+        foreach ($reversedSteps as $step) {
             $next = clone $pipeline;
 
-            $pipeline = static function($data) use ($iterate, $next, $step) {
+            $pipeline = static function ($data) use ($iterate, $next, $step) {
                 return $next($iterate($data, $step));
             };
 
@@ -112,7 +123,7 @@ class Etl implements ETLInterface
 
     private function resetInstance(): void
     {
-        foreach($this->steps as $instance){
+        foreach ($this->steps as $instance) {
             $instance->destroyInstance();
         }
     }
